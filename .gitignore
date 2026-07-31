@@ -47,3 +47,10 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# ssh keys — never commit a private key
+*.pem
+*_ed25519
+*_ed25519.pub
+*_rsa
+*_rsa.pub
