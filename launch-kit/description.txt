@@ -1,0 +1,19 @@
+Routefold is AI multichain expansion intelligence for onchain products.
+
+Paste your product and receive a transparent, chain-by-chain expansion blueprint
+covering ecosystem fit, architecture, risks, and execution.
+
+Routefold builds a Multichain Digital Twin of your product — an explicit,
+editable model of its architecture, users, liquidity requirements, transaction
+shape, security posture and constraints — then scores every ecosystem against it
+with a deterministic engine whose every term is published.
+
+The language model does not choose the number. It explains the engine's output,
+identifies trade-offs and unknowns, and may adjust any score by at most five
+points, with a written justification, shown separately from the base score.
+
+Where the model is uncertain, it says so: missing data is recorded, confidence is
+reported as its own value, and candidates that are too close to separate are
+reported as tied rather than ranked into a false winner.
+
+Free during private beta.

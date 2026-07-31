@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none">
+  <title>Routefold mark — dark background</title>
+  <path d="M3 26.5 L13.4 16.1" stroke="#FDFAF6" stroke-width="1.7" stroke-linecap="round" opacity="0.45"/>
+  <path d="M13.4 16.1 L29 16.1" stroke="#FF7A2F" stroke-width="1.9" stroke-linecap="round"/>
+  <path d="M13.4 16.1 L24.5 5" stroke="#FDFAF6" stroke-width="1.7" stroke-linecap="round" opacity="0.8"/>
+  <path d="M13.4 16.1 L24.5 27.2" stroke="#FDFAF6" stroke-width="1.7" stroke-linecap="round" opacity="0.28"/>
+  <circle cx="13.4" cy="16.1" r="2.6" fill="#FF7A2F"/>
+  <circle cx="29" cy="16.1" r="1.9" fill="#FFB27A"/>
+  <circle cx="24.5" cy="5" r="1.6" stroke="#FDFAF6" stroke-width="1.2" opacity="0.7"/>
+  <circle cx="24.5" cy="27.2" r="1.6" stroke="#FDFAF6" stroke-width="1.2" opacity="0.35"/>
+</svg>

@@ -1,0 +1,56 @@
+ROUTEFOLD — FEATURE SUMMARY
+
+MULTICHAIN DIGITAL TWIN
+A structured, editable model of your product built from your public sources and
+your own answers. Every field is tagged with its provenance — found in a source,
+entered by you, or inferred — so you can correct the inferences before anything
+is scored.
+
+TRANSPARENT CHAIN SCORECARD
+100 points across 5 categories and 17 documented sub-factors. Every row expands
+to the full factor table with the points awarded and the reason recorded. Hard
+constraints zero a score outright with the reason attached.
+
+BOUNDED MODEL INFLUENCE
+The score comes from a deterministic function. The model may adjust a total by at
+most ±5 points, only with a written justification, stored and displayed
+separately from the base score.
+
+EXPANSION MAP
+An interactive graph of the decision: current deployments, the recommended route,
+secondary candidates and everything ruled out — with the reason attached to the
+node.
+
+CHAIN COMPARISON
+Two to four chains side by side: category shape, factor-level points, and the
+underlying knowledge-base characteristics that explain the difference.
+
+ARCHITECTURE BRIEF
+A deployment model with its reasoning, a component diagram, and specific
+positions on token model, messaging, state synchronisation, liquidity, indexing
+and monitoring. Assumptions are listed separately.
+
+RISK REGISTER
+Filterable by category and severity. Probability, impact, an owner role, and a
+mitigation someone can complete. Compliance items are framed as questions for
+qualified counsel, never as conclusions.
+
+30-DAY PLAN
+Four weeks with milestones, tasks across engineering, product, ecosystem and
+operations tracks, dependencies between them, and acceptance criteria that are
+objectively checkable.
+
+TECHNICAL BRIEF
+An engineering handoff with copyable sections and a complete JSON export.
+
+SOURCES AND ASSUMPTIONS
+What was read, when, what could not be read, what was assumed, what is missing,
+and the methodology version used.
+
+SHARING AND EXPORT
+Revocable read-only share links with 256 bits of entropy. PDF and JSON export.
+Share pages never expose account identity or any other project.
+
+PUBLISHED METHODOLOGY
+Every category, sub-factor, hard constraint and penalty is documented at
+/methodology, with a whitepaper at /whitepaper.

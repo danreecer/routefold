@@ -1,0 +1,151 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # No real credentials are needed: the AI layer is forced into fixture mode and
+  # every test asserts behaviour that holds without Clerk or Anthropic.
+  ROUTEFOLD_FIXTURE_MODE: 'true'
+  NEXT_PUBLIC_APP_URL: 'http://localhost:3319'
+  REPORT_GENERATION_LIMIT: '5'
+  SECTION_REGENERATION_LIMIT: '25'
+  DEFILLAMA_ENABLED: 'false'
+
+jobs:
+  verify:
+    name: Typecheck, lint and test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: routefold
+          POSTGRES_PASSWORD: routefold
+          POSTGRES_DB: routefold_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://routefold:routefold@localhost:5432/routefold_test
+      DIRECT_DATABASE_URL: postgresql://routefold:routefold@localhost:5432/routefold_test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Apply migrations
+        run: pnpm db:deploy
+
+      - name: Seed
+        run: pnpm db:seed
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Unit and integration tests
+        run: pnpm test
+
+  build:
+    name: Production build
+    runs-on: ubuntu-latest
+    needs: verify
+
+    env:
+      # The build only needs a syntactically valid URL; it never connects.
+      DATABASE_URL: postgresql://routefold:routefold@localhost:5432/routefold_build
+      DIRECT_DATABASE_URL: postgresql://routefold:routefold@localhost:5432/routefold_build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Cache the build for the e2e job
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: |
+            .next
+            !.next/cache
+          retention-days: 1
+
+  e2e:
+    name: Playwright smoke tests
+    runs-on: ubuntu-latest
+    needs: build
+
+    env:
+      DATABASE_URL: postgresql://routefold:routefold@localhost:5432/routefold_e2e
+      DIRECT_DATABASE_URL: postgresql://routefold:routefold@localhost:5432/routefold_e2e
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: next-build
+          path: .next
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium webkit
+
+      - name: Run smoke tests
+        run: pnpm test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7

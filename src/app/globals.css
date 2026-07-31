@@ -1,0 +1,613 @@
+@import 'tailwindcss';
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROUTEFOLD — Futuristic Orange Minimalism
+
+   A light, warm, editorial surface. Cream and off-white grounds, deep charcoal
+   type, one disciplined ember-orange accent with apricot and amber support, and
+   a single muted marine blue reserved for contrast and live state.
+
+   Structure comes from hairlines, generous negative space and large ambient
+   gradient fields — not from stacked cards and heavy shadows.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ── Surfaces ─────────────────────────────────────────────────────────── */
+  /* `shell` is the warmest tinted ground used for alternating sections;
+     `paper` is the page base; `surface` and `raised` are panel materials. */
+  --color-shell: #faf3ec;
+  --color-paper: #fdfaf6;
+  --color-surface: #ffffff;
+  --color-raised: #ffffff;
+  --color-sand: #f3eae0;
+  --color-stone: #e6dbcf;
+
+  /* ── Type ─────────────────────────────────────────────────────────────── */
+  --color-ink: #1c1815;
+  --color-ink-dim: #4d453d;
+  --color-ink-faint: #7d736a;
+  --color-ink-ghost: #a89d93;
+
+  /* ── Accent: ember is the principal accent ────────────────────────────── */
+  --color-ember: #e2570b;
+  --color-ember-bright: #ff7a2f;
+  --color-ember-deep: #b03f00;
+  --color-ember-wash: #fff1e6;
+  --color-apricot: #ffb27a;
+  --color-amber: #f2a516;
+
+  /* ── Marine: contrast + live/active state only. Never decorative. ─────── */
+  --color-marine: #2a4d73;
+  --color-marine-soft: #4a7ba8;
+
+  /* ── Semantic ─────────────────────────────────────────────────────────── */
+  --color-positive: #17845b;
+  --color-caution: #b26a00;
+  --color-critical: #c93b2b;
+
+  /* ── Hairlines ────────────────────────────────────────────────────────── */
+  --color-line: rgba(28, 24, 21, 0.1);
+  --color-line-strong: rgba(28, 24, 21, 0.17);
+  --color-line-faint: rgba(28, 24, 21, 0.055);
+
+  /* ── Type stack ───────────────────────────────────────────────────────── */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, 'SF Mono', 'JetBrains Mono', monospace;
+
+  /* ── Editorial scale ──────────────────────────────────────────────────── */
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.45;
+  --text-micro--letter-spacing: 0.1em;
+
+  --text-mono-sm: 0.75rem;
+  --text-mono-sm--line-height: 1.5;
+  --text-mono-sm--letter-spacing: 0.02em;
+
+  --text-display: clamp(2.5rem, 4.35vw, 4rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.04em;
+
+  --text-headline: clamp(2rem, 4.2vw, 3.5rem);
+  --text-headline--line-height: 1.04;
+  --text-headline--letter-spacing: -0.032em;
+
+  --text-title: clamp(1.5rem, 2.6vw, 2.125rem);
+  --text-title--line-height: 1.14;
+  --text-title--letter-spacing: -0.024em;
+
+  --text-lede: clamp(1.0625rem, 1.5vw, 1.3125rem);
+  --text-lede--line-height: 1.6;
+  --text-lede--letter-spacing: -0.012em;
+
+  /* ── Motion ───────────────────────────────────────────────────────────── */
+  --ease-fold: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Layout ───────────────────────────────────────────────────────────── */
+  --spacing-gutter: 1.5rem;
+  --radius-fold: 14px;
+
+  /* ── Frost ────────────────────────────────────────────────────────────── */
+  /* One tuned recipe, applied through utilities rather than ad hoc per
+     component, so every translucent surface refracts the ambient gradient the
+     same way and depth reads consistently. On a light ground the tint is white
+     rather than a lift, and saturation is what keeps the warmth alive. */
+  --frost-tint: rgba(255, 255, 255, 0.72);
+  --frost-tint-strong: rgba(255, 255, 255, 0.86);
+  --frost-tint-faint: rgba(255, 255, 255, 0.45);
+  --frost-blur: 20px;
+  --frost-blur-heavy: 30px;
+  --frost-saturate: 150%;
+  --frost-edge: rgba(255, 255, 255, 0.9);
+  --frost-shadow: 0 1px 2px rgba(28, 24, 21, 0.04), 0 12px 32px -18px rgba(28, 24, 21, 0.18);
+  --frost-shadow-lifted: 0 2px 4px rgba(28, 24, 21, 0.05), 0 28px 60px -28px rgba(28, 24, 21, 0.26);
+  --frost-shadow-ember: 0 2px 4px rgba(226, 87, 11, 0.08), 0 24px 56px -26px rgba(226, 87, 11, 0.4);
+}
+
+/* ═══ Base ═══════════════════════════════════════════════════════════════ */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv01', 'cv03', 'cv04', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-ember) 24%, transparent);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ember);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-stone) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-stone);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 6px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--color-ink-ghost);
+    background-clip: content-box;
+  }
+
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
+
+  [data-numeric] {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ═══ Utilities ══════════════════════════════════════════════════════════ */
+
+@layer utilities {
+  /* ═══ Frosted surfaces ═════════════════════════════════════════════════ */
+  .frost {
+    position: relative;
+    background-color: var(--frost-tint);
+    -webkit-backdrop-filter: blur(var(--frost-blur)) saturate(var(--frost-saturate));
+    backdrop-filter: blur(var(--frost-blur)) saturate(var(--frost-saturate));
+    border: 1px solid var(--color-line);
+    box-shadow: var(--frost-shadow);
+  }
+
+  .frost-strong {
+    background-color: var(--frost-tint-strong);
+    -webkit-backdrop-filter: blur(var(--frost-blur-heavy)) saturate(var(--frost-saturate));
+    backdrop-filter: blur(var(--frost-blur-heavy)) saturate(var(--frost-saturate));
+    border: 1px solid var(--color-line);
+    box-shadow: var(--frost-shadow-lifted);
+  }
+
+  .frost-faint {
+    background-color: var(--frost-tint-faint);
+    -webkit-backdrop-filter: blur(12px) saturate(130%);
+    backdrop-filter: blur(12px) saturate(130%);
+    border: 1px solid var(--color-line-faint);
+  }
+
+  /* Specular lip along the top edge — what makes a light frosted pane read as
+     glass rather than as a flat white box. */
+  .frost-sheen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      170deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0) 42%
+    );
+  }
+
+  .frost-ember {
+    background-color: color-mix(in oklab, var(--color-ember-wash) 78%, transparent);
+    -webkit-backdrop-filter: blur(var(--frost-blur)) saturate(var(--frost-saturate));
+    backdrop-filter: blur(var(--frost-blur)) saturate(var(--frost-saturate));
+    border: 1px solid color-mix(in oklab, var(--color-ember) 26%, transparent);
+    box-shadow: var(--frost-shadow-ember);
+  }
+
+  /* ═══ Ambient gradient fields ══════════════════════════════════════════ */
+  /* The signature of the visual system: large, soft, warm light sources that
+     the frosted surfaces above them refract. Heavily blurred so they read as
+     atmosphere rather than as shapes. */
+  .aurora {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 999px;
+    filter: blur(90px);
+  }
+  .aurora-ember {
+    background: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--color-ember) 62%, transparent) 0%,
+      color-mix(in oklab, var(--color-apricot) 45%, transparent) 45%,
+      transparent 72%
+    );
+  }
+  .aurora-amber {
+    background: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--color-amber) 55%, transparent) 0%,
+      transparent 70%
+    );
+  }
+  .aurora-marine {
+    background: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--color-marine) 34%, transparent) 0%,
+      transparent 70%
+    );
+  }
+
+  /* The hero's full-bleed sunset field. */
+  .sunset-field {
+    background:
+      radial-gradient(ellipse 62% 58% at 8% 12%, rgba(255, 168, 104, 0.78) 0%, transparent 64%),
+      radial-gradient(ellipse 54% 52% at 74% 16%, rgba(226, 87, 11, 0.44) 0%, transparent 62%),
+      radial-gradient(ellipse 58% 54% at 96% 62%, rgba(255, 178, 122, 0.5) 0%, transparent 66%),
+      radial-gradient(ellipse 76% 62% at 46% 100%, rgba(242, 165, 22, 0.4) 0%, transparent 66%),
+      radial-gradient(ellipse 34% 40% at 88% 96%, rgba(42, 77, 115, 0.2) 0%, transparent 64%),
+      linear-gradient(158deg, #fff4e8 0%, #fffaf4 52%, #fdf7ef 100%);
+  }
+
+  /* ═══ Structure ════════════════════════════════════════════════════════ */
+  .grid-field {
+    background-image:
+      linear-gradient(to right, var(--color-line-faint) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-line-faint) 1px, transparent 1px);
+    background-size: 72px 72px;
+    background-position: center center;
+  }
+
+  .grid-field-fine {
+    background-image:
+      linear-gradient(to right, var(--color-line-faint) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-line-faint) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+
+  .field-mask {
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%);
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%);
+  }
+
+  .field-mask-top {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    line-height: var(--text-micro--line-height);
+    letter-spacing: var(--text-micro--letter-spacing);
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  /* Corner ticks: the folded-plane marker used on framed panels. */
+  .fold-corners {
+    position: relative;
+  }
+  .fold-corners::before,
+  .fold-corners::after {
+    content: '';
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-color: color-mix(in oklab, var(--color-ember) 45%, transparent);
+    pointer-events: none;
+  }
+  .fold-corners::before {
+    top: 9px;
+    left: 9px;
+    border-top: 1.5px solid;
+    border-left: 1.5px solid;
+  }
+  .fold-corners::after {
+    bottom: 9px;
+    right: 9px;
+    border-bottom: 1.5px solid;
+    border-right: 1.5px solid;
+  }
+
+  .text-gradient-ember {
+    background: linear-gradient(
+      104deg,
+      var(--color-ink) 0%,
+      var(--color-ink) 38%,
+      var(--color-ember-deep) 72%,
+      var(--color-ember) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .rule-fade {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-line-strong) 15%,
+      var(--color-line-strong) 85%,
+      transparent
+    );
+  }
+
+  .rule-fade-vertical {
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--color-line-strong) 15%,
+      var(--color-line-strong) 85%,
+      transparent
+    );
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .shell {
+    width: 100%;
+    max-width: 88rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .shell {
+      padding-inline: 2.5rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .shell {
+      padding-inline: 3.5rem;
+    }
+  }
+
+  .shell-narrow {
+    width: 100%;
+    max-width: 52rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .shell-narrow {
+      padding-inline: 2rem;
+    }
+  }
+}
+
+/* ═══ Motion ═════════════════════════════════════════════════════════════ */
+
+@keyframes fold-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-live {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes aurora-drift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2%, -3%, 0) scale(1.06);
+  }
+}
+
+@layer utilities {
+  .animate-fold-in {
+    animation: fold-in 0.7s var(--ease-fold) both;
+  }
+
+  .animate-pulse-live {
+    animation: pulse-live 2.4s var(--ease-precise) infinite;
+  }
+
+  .animate-drift {
+    animation: aurora-drift 22s var(--ease-precise) infinite;
+  }
+
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-sand);
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+    animation: shimmer 1.8s infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .skeleton::after {
+    display: none;
+  }
+}
+
+/* ═══ React Flow theming ═════════════════════════════════════════════════ */
+
+.react-flow {
+  --xy-background-color: transparent;
+  --xy-edge-stroke-default: var(--color-line-strong);
+  --xy-edge-stroke-width-default: 1;
+  --xy-node-border-radius-default: 12px;
+  --xy-attribution-background-color-default: transparent;
+}
+
+.react-flow__attribution {
+  background: transparent !important;
+  font-size: 9px;
+  color: var(--color-ink-ghost);
+}
+.react-flow__attribution a {
+  color: var(--color-ink-ghost);
+}
+
+.react-flow__controls-button {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-bottom: 1px solid var(--color-line) !important;
+  fill: var(--color-ink-dim) !important;
+}
+.react-flow__controls-button:hover {
+  background: var(--color-ember-wash) !important;
+}
+
+.react-flow__minimap {
+  background-color: rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+}
+
+.react-flow__handle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ═══ Print ══════════════════════════════════════════════════════════════ */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 14mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #101013 !important;
+    font-size: 10.5pt;
+  }
+
+  .print-hidden,
+  nav[data-app-nav],
+  aside[data-app-sidebar],
+  [data-print='hide'] {
+    display: none !important;
+  }
+
+  .grid-field,
+  .grid-field-fine,
+  .sunset-field {
+    background-image: none !important;
+    background: #ffffff !important;
+  }
+
+  [data-print='block'] {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  h1, h2, h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+    color: #101013 !important;
+  }
+
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 8pt;
+    color: #55555c;
+    word-break: break-all;
+  }
+
+  .print-surface,
+  .frost,
+  .frost-strong,
+  .frost-faint,
+  .frost-ember {
+    background: #ffffff !important;
+    border-color: #d8d8dc !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .frost-sheen::before,
+  .aurora {
+    display: none !important;
+  }
+}
+
+/* Backdrop-filter is expensive on low-end hardware and some engines drop it
+   entirely. Fall back to opaque white so panels never become unreadable. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .frost,
+  .frost-strong,
+  .frost-faint {
+    background-color: #ffffff;
+  }
+  .frost-ember {
+    background-color: var(--color-ember-wash);
+  }
+}

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" fill="none">
+  <title>Routefold — Open Graph composition</title>
+  <defs>
+    <linearGradient id="og-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFF0E0"/><stop offset="52%" stop-color="#FFFAF4"/><stop offset="100%" stop-color="#FDF7EF"/>
+    </linearGradient>
+    <radialGradient id="og-warm" cx="14%" cy="10%" r="62%">
+      <stop offset="0%" stop-color="#FFA868" stop-opacity="0.85"/><stop offset="100%" stop-color="#FFB27A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="og-ember" cx="92%" cy="94%" r="58%">
+      <stop offset="0%" stop-color="#E2570B" stop-opacity="0.42"/><stop offset="100%" stop-color="#E2570B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#og-bg)"/>
+  <rect width="1200" height="630" fill="url(#og-warm)"/>
+  <rect width="1200" height="630" fill="url(#og-ember)"/>
+
+  <g transform="translate(76, 60)">
+    <path d="M3 26.5 L13.4 16.1" stroke="#1C1815" stroke-width="1.8" opacity="0.45" stroke-linecap="round"/>
+    <path d="M13.4 16.1 L29 16.1" stroke="#E2570B" stroke-width="2" stroke-linecap="round"/>
+    <path d="M13.4 16.1 L24.5 5" stroke="#1C1815" stroke-width="1.8" opacity="0.8" stroke-linecap="round"/>
+    <path d="M13.4 16.1 L24.5 27.2" stroke="#1C1815" stroke-width="1.8" opacity="0.28" stroke-linecap="round"/>
+    <circle cx="13.4" cy="16.1" r="2.7" fill="#E2570B"/>
+  </g>
+  <text x="125" y="88" font-family="Inter, Helvetica, Arial, sans-serif" font-size="30" font-weight="600" letter-spacing="-1.1" fill="#1C1815">Routefold</text>
+
+  <g transform="translate(726, 218)">
+    <path d="M14 280 L150 168" stroke="#1C1815" stroke-width="2.4" opacity="0.35" stroke-linecap="round"/>
+    <path d="M150 168 L400 168" stroke="#E2570B" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M150 168 L340 46" stroke="#1C1815" stroke-width="2.4" opacity="0.5" stroke-linecap="round"/>
+    <path d="M150 168 L340 290" stroke="#1C1815" stroke-width="2.4" opacity="0.2" stroke-linecap="round"/>
+    <circle cx="150" cy="168" r="12" fill="#E2570B"/>
+    <circle cx="400" cy="168" r="9" fill="#FF7A2F"/>
+    <circle cx="340" cy="46" r="7" stroke="#1C1815" stroke-width="2.2" opacity="0.55"/>
+    <circle cx="340" cy="290" r="7" stroke="#1C1815" stroke-width="2.2" opacity="0.3"/>
+  </g>
+
+  <text x="76" y="308" font-family="'JetBrains Mono', monospace" font-size="15" letter-spacing="2.6" fill="#B03F00">AI MULTICHAIN EXPANSION INTELLIGENCE</text>
+  <text x="76" y="392" font-family="Inter, Helvetica, Arial, sans-serif" font-size="72" font-weight="600" letter-spacing="-3" fill="#1C1815">Model the next chain</text>
+  <text x="76" y="466" font-family="Inter, Helvetica, Arial, sans-serif" font-size="72" font-weight="600" letter-spacing="-3" fill="#B03F00">before you move.</text>
+
+  <line x1="76" y1="536" x2="1124" y2="536" stroke="#1C1815" stroke-opacity="0.14"/>
+  <text x="76" y="574" font-family="Inter, Helvetica, Arial, sans-serif" font-size="17" fill="#7D736A">Transparent scoring</text>
+  <text x="286" y="574" font-family="Inter, Helvetica, Arial, sans-serif" font-size="17" fill="#7D736A">Architecture brief</text>
+  <text x="486" y="574" font-family="Inter, Helvetica, Arial, sans-serif" font-size="17" fill="#7D736A">Risk register</text>
+  <text x="646" y="574" font-family="Inter, Helvetica, Arial, sans-serif" font-size="17" fill="#7D736A">30-day plan</text>
+</svg>

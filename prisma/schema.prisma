@@ -1,0 +1,381 @@
+// Routefold — data model
+//
+// Design notes
+//  - Every row that belongs to a person is reachable from `UserProfile.clerkUserId`.
+//    Authorisation always resolves the Clerk subject first, then filters by the
+//    owning user id. IDs are never trusted on their own.
+//  - Structured AI output is stored as `Json` after Zod validation, never raw.
+//  - Deterministic scores and AI adjustments are stored in separate columns so the
+//    UI can always show the user what the engine computed vs. what the model changed.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Identity
+// ─────────────────────────────────────────────────────────────────────────────
+
+model UserProfile {
+  id          String   @id @default(cuid())
+  clerkUserId String   @unique
+  email       String?
+  displayName String?
+
+  /// Completed report generations consumed during the private beta.
+  reportsGenerated Int @default(0)
+
+  /// Section regenerations consumed (smaller unit than a full report).
+  sectionsRegenerated Int @default(0)
+
+  /// Optional per-user override of REPORT_GENERATION_LIMIT, set by an operator.
+  reportLimitOverride Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projects   Project[]
+  analyses   Analysis[]
+  activities ActivityEvent[]
+
+  @@index([createdAt])
+  @@map("user_profiles")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Product being analysed
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Project {
+  id     String @id @default(cuid())
+  userId String
+
+  name        String
+  websiteUrl  String?
+  docsUrl     String?
+  description String? @db.Text
+
+  /// Chain slugs the product is already deployed on.
+  currentChains String[] @default([])
+
+  category String?
+
+  /// Raw wizard answers (objectives, constraints, preferences) kept for replay
+  /// and for regenerating sections without re-running the whole wizard.
+  wizardInput Json?
+
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  user      UserProfile      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sources   SourceDocument[]
+  analyses  Analysis[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, name])
+  @@map("projects")
+}
+
+enum RetrievalStatus {
+  PENDING
+  SUCCESS
+  BLOCKED
+  TIMEOUT
+  UNSUPPORTED_CONTENT
+  TOO_LARGE
+  NOT_FOUND
+  ERROR
+  MANUAL
+}
+
+model SourceDocument {
+  id        String @id @default(cuid())
+  projectId String
+
+  sourceUrl     String
+  /// Final URL after redirects, when it differs from `sourceUrl`.
+  resolvedUrl   String?
+  title         String?
+  extractedText String? @db.Text
+
+  retrievalStatus RetrievalStatus @default(PENDING)
+  /// Machine-readable reason when retrieval did not succeed.
+  failureReason   String?
+
+  /// SHA-256 of the extracted text; used to skip redundant re-extraction.
+  contentHash String?
+  byteSize    Int?
+  wordCount   Int?
+
+  /// "website" | "docs" | "manual"
+  kind String @default("website")
+
+  retrievedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+  @@index([contentHash])
+  @@map("source_documents")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Analysis run
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum AnalysisStatus {
+  QUEUED
+  RUNNING
+  AWAITING_REVIEW
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum AnalysisStage {
+  RETRIEVING_SOURCES
+  EXTRACTING_PROFILE
+  BUILDING_TWIN
+  SCORING_ECOSYSTEMS
+  DESIGNING_SEQUENCE
+  GENERATING_ARCHITECTURE
+  BUILDING_RISK_REGISTER
+  CREATING_EXECUTION_PLAN
+  FINALIZING
+  DONE
+}
+
+model Analysis {
+  id        String @id @default(cuid())
+  projectId String
+  userId    String
+
+  title String?
+
+  status       AnalysisStatus @default(QUEUED)
+  currentStage AnalysisStage  @default(RETRIEVING_SOURCES)
+  /// 0–100, advanced only when a real stage completes.
+  progress     Int            @default(0)
+
+  scoringVersion String
+  modelName      String
+  /// "live" | "fixture" — never silently mixed.
+  generationMode String @default("live")
+
+  /// Overall report confidence 0–100, derived from per-chain confidence.
+  confidence Int?
+
+  /// Slug of the top-ranked chain, denormalised for dashboard aggregates.
+  recommendedChain String?
+
+  errorCode    String?
+  errorMessage String?
+
+  /// Client-supplied idempotency key preventing duplicate submits.
+  idempotencyKey String?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  project Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  digitalTwin DigitalTwin?
+  chainScores ChainScore[]
+  sections    ReportSection[]
+  shareLinks  ShareLink[]
+  events      AnalysisEvent[]
+
+  @@unique([userId, idempotencyKey], name: "user_idempotency")
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([projectId, createdAt(sort: Desc)])
+  @@index([status])
+  @@map("analyses")
+}
+
+/// Append-only stage log. Drives the honest progress UI — one row per real
+/// transition, so the client never has to guess or run a timer.
+model AnalysisEvent {
+  id         String @id @default(cuid())
+  analysisId String
+
+  stage   AnalysisStage
+  /// "started" | "completed" | "failed" | "skipped"
+  state   String
+  message String?
+  detail  Json?
+
+  createdAt DateTime @default(now())
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId, createdAt])
+  @@map("analysis_events")
+}
+
+model DigitalTwin {
+  id         String @id @default(cuid())
+  analysisId String @unique
+
+  /// Zod-validated `DigitalTwin` document.
+  structuredData Json
+  /// 0–100 extraction confidence.
+  confidence     Int
+  /// Explicit list of assumptions the model had to make.
+  assumptions    String[] @default([])
+  /// Fields that could not be determined from any source.
+  missingData    String[] @default([])
+  /// Which fields came from retrieved sources vs. the user, for provenance UI.
+  fieldSources   Json?
+
+  /// True once the user has reviewed and confirmed the twin.
+  userConfirmed   Boolean   @default(false)
+  userEditedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@map("digital_twins")
+}
+
+model ChainScore {
+  id         String @id @default(cuid())
+  analysisId String
+
+  chainSlug String
+  chainName String
+
+  /// Deterministic engine output, 0–100. Never written by the model.
+  deterministicScore Float
+  /// Bounded model adjustment, clamped to ±5.
+  aiAdjustment       Float  @default(0)
+  /// deterministicScore + aiAdjustment, clamped to 0–100.
+  finalScore         Float
+  /// 0–100 data-completeness confidence for this chain.
+  confidence         Int
+
+  rank Int
+
+  /// "primary" | "secondary" | "monitor" | "not_recommended" | "blocked" | "current"
+  recommendation String @default("monitor")
+
+  /// Full factor-by-factor breakdown from the scoring engine.
+  scoreBreakdown Json
+  /// Model narrative: rationale, advantages, tradeoffs, unknowns, adjustment reason.
+  explanation    Json?
+
+  /// Hard constraints that disqualified or penalised this chain.
+  blockers    String[] @default([])
+  missingData String[] @default([])
+
+  createdAt DateTime @default(now())
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@unique([analysisId, chainSlug])
+  @@index([analysisId, rank])
+  @@map("chain_scores")
+}
+
+enum ReportSectionType {
+  EXECUTIVE_SUMMARY
+  DIGITAL_TWIN
+  EXPANSION_MAP
+  CHAIN_SCORECARD
+  ARCHITECTURE
+  RISK_REGISTER
+  EXECUTION_PLAN
+  TECHNICAL_BRIEF
+  SOURCES_ASSUMPTIONS
+}
+
+model ReportSection {
+  id         String @id @default(cuid())
+  analysisId String
+
+  sectionType ReportSectionType
+  /// Zod-validated section payload.
+  content     Json
+  /// Increments on every regeneration.
+  version     Int               @default(1)
+  modelName   String?
+  generatedAt DateTime          @default(now())
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@unique([analysisId, sectionType])
+  @@index([analysisId])
+  @@map("report_sections")
+}
+
+model ShareLink {
+  id         String @id @default(cuid())
+  analysisId String
+
+  /// 32 bytes of CSPRNG entropy, base64url encoded.
+  token     String   @unique
+  isActive  Boolean  @default(true)
+  expiresAt DateTime?
+
+  viewCount    Int       @default(0)
+  lastViewedAt DateTime?
+
+  createdAt DateTime  @default(now())
+  revokedAt DateTime?
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId])
+  @@index([token, isActive])
+  @@map("share_links")
+}
+
+model ActivityEvent {
+  id     String @id @default(cuid())
+  userId String
+
+  /// e.g. "project.created", "analysis.completed", "share.revoked"
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json?
+
+  createdAt DateTime @default(now())
+
+  user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([entityType, entityId])
+  @@map("activity_events")
+}
+
+/// Cache for external public data (DeFiLlama). Keeps the last valid snapshot so
+/// the app degrades to cached values rather than failing or inventing numbers.
+model ExternalDataSnapshot {
+  id String @id @default(cuid())
+
+  /// "defillama.chains"
+  source  String
+  payload Json
+  /// "live" | "cached" | "seeded"
+  status  String @default("live")
+
+  fetchedAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@unique([source])
+  @@index([source, fetchedAt])
+  @@map("external_data_snapshots")
+}
