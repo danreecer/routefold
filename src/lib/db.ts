@@ -45,6 +45,12 @@ export async function withDb<T>(operation: () => Promise<T>): Promise<T> {
     if (code && ['P1000', 'P1001', 'P1002', 'P1003', 'P1017'].includes(code)) {
       throw new DatabaseUnavailableError(error);
     }
+    // A deployment with no DATABASE_URL at all fails at client initialisation
+    // rather than at connect time. That is still "no database", and it should
+    // read as a configuration gap rather than as an unexplained 500.
+    if ((error as { name?: string }).name === 'PrismaClientInitializationError') {
+      throw new DatabaseUnavailableError(error);
+    }
     throw error;
   }
 }
