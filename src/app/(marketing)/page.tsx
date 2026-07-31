@@ -4,6 +4,7 @@ import { ArrowRight, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RouteField } from '@/components/marketing/route-field';
 import { FounderSection } from '@/components/marketing/founder-section';
+import { ProductHuntBadge } from '@/components/marketing/product-hunt-badge';
 import {
   CoverageStrip,
   DigitalTwinSection,
@@ -114,9 +115,13 @@ function Hero() {
                 </Button>
               </div>
 
+              <div className="animate-fold-in" style={{ animationDelay: '280ms' }}>
+                <ProductHuntBadge />
+              </div>
+
               <div
-                className="mt-1 flex flex-wrap items-center gap-x-6 gap-y-2 animate-fold-in"
-                style={{ animationDelay: '280ms' }}
+                className="flex flex-wrap items-center gap-x-6 gap-y-2 animate-fold-in"
+                style={{ animationDelay: '340ms' }}
               >
                 {['Free during private beta', 'Deterministic scoring', 'Published methodology'].map(
                   (label) => (

@@ -32,7 +32,7 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src ${scriptSrc}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' blob: data: https://img.clerk.com",
+  "img-src 'self' blob: data: https://img.clerk.com https://api.producthunt.com",
   "font-src 'self' data:",
   `connect-src ${connectSrc}`,
   "frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
