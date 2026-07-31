@@ -16,6 +16,7 @@ import {
   X,
 } from 'lucide-react';
 import { RoutefoldMark, RoutefoldWordmark } from '@/components/brand/logo';
+import { PoweredByZefi } from '@/components/brand/powered-by';
 import { Button } from '@/components/ui/button';
 import { Badge, Progress } from '@/components/ui/primitives';
 import { CommandPalette } from './command-palette';
@@ -238,6 +239,10 @@ export function AppShell({
               }}
             />
             <Badge tone="ghost">Private beta</Badge>
+          </div>
+
+          <div className="border-t border-line pt-3">
+            <PoweredByZefi />
           </div>
         </div>
       </aside>

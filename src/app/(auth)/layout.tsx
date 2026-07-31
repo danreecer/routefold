@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { RoutefoldWordmark } from '@/components/brand/logo';
+import { PoweredByZefi } from '@/components/brand/powered-by';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -20,9 +21,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
       <footer className="relative border-t border-line">
         <div className="shell flex flex-wrap items-center justify-between gap-4 py-5">
-          <p className="text-xs text-ink-ghost">
-            Free during private beta · Five report generations per account
-          </p>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <p className="text-xs text-ink-ghost">
+              Free during private beta · Five report generations per account
+            </p>
+            <span className="text-xs text-ink-ghost" aria-hidden="true">·</span>
+            <PoweredByZefi />
+          </div>
           <nav className="flex gap-5" aria-label="Legal">
             <Link href="/privacy" className="text-xs text-ink-ghost transition-colors hover:text-ink-faint">
               Privacy

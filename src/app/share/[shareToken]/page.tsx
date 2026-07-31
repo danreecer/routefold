@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { RoutefoldWordmark } from '@/components/brand/logo';
+import { PoweredByZefi } from '@/components/brand/powered-by';
 import { ReportView } from '@/components/report/report-view';
 import { Panel, PanelBody } from '@/components/ui/panel';
 import { Badge } from '@/components/ui/primitives';
@@ -87,7 +88,9 @@ export default async function SharePage({
               security-audit, or investment advice.
             </p>
           </div>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <PoweredByZefi />
+            <span className="text-xs text-ink-ghost" aria-hidden="true">·</span>
             <Link href="/methodology" className="text-xs text-ink-faint transition-colors hover:text-ink">
               Methodology
             </Link>

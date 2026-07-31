@@ -65,10 +65,9 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
   },
-  icons: {
-    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
-    apple: [{ url: '/apple-icon.png' }],
-  },
+  // Next serves src/app/icon.png and src/app/apple-icon.png from the file
+  // convention; no explicit `icons` entry is needed and adding one would
+  // override the generated, correctly-sized variants.
   formatDetection: { telephone: false, address: false, email: false },
 };
 

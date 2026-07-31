@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { RoutefoldMark } from '@/components/brand/logo';
+import { PoweredByZefi } from '@/components/brand/powered-by';
 import { Button } from '@/components/ui/button';
 
 export default function ErrorBoundary({
@@ -23,7 +24,7 @@ export default function ErrorBoundary({
       <div className="grid-field field-mask absolute inset-0 opacity-60" aria-hidden="true" />
 
       <div className="relative flex max-w-lg flex-col items-center gap-8 text-center">
-        <RoutefoldMark className="size-10" />
+        <RoutefoldMark className="size-14" />
 
         <div className="flex flex-col gap-3">
           <span className="eyebrow">Something went wrong</span>
@@ -47,6 +48,8 @@ export default function ErrorBoundary({
             <Link href="/app">Back to dashboard</Link>
           </Button>
         </div>
+
+        <PoweredByZefi className="mt-2" />
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { RoutefoldMark, RoutefoldWordmark } from '@/components/brand/logo';
+import { PoweredByZefi } from '@/components/brand/powered-by';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -177,6 +178,9 @@ export function SiteFooter() {
               documented methodology, and outputs an engineering team can act on.
             </p>
             <p className="eyebrow mt-6">Free during private beta</p>
+            <div className="mt-4">
+              <PoweredByZefi tone="standard" />
+            </div>
           </div>
 
           {FOOTER_GROUPS.map((group) => (
@@ -205,9 +209,13 @@ export function SiteFooter() {
             security-audit, or investment advice.
           </p>
           <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-xs text-ink-ghost">
-              <RoutefoldMark className="size-4" accent={false} />
-              <span>© {new Date().getFullYear()} Routefold</span>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink-ghost">
+              <span className="flex items-center gap-2">
+                <RoutefoldMark className="size-5" />
+                <span>© {new Date().getFullYear()} Routefold</span>
+              </span>
+              <span aria-hidden="true">·</span>
+              <PoweredByZefi />
             </div>
             <span className="font-mono text-[0.625rem] uppercase tracking-[0.09em] text-ink-ghost">
               Model the next chain before you move

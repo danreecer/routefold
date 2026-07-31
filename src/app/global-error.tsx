@@ -21,21 +21,18 @@ export default function GlobalError({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#0a0b0f',
-          color: '#edeae4',
+          backgroundColor: '#FDFAF6',
+          color: '#1C1815',
           fontFamily:
             'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif',
           padding: '2rem',
         }}
       >
         <div style={{ maxWidth: '32rem', textAlign: 'center' }}>
-          <svg viewBox="0 0 32 32" width="40" height="40" fill="none" aria-hidden="true">
-            <path d="M3 26.5 L13.4 16.1" stroke="#EDEAE4" strokeWidth="1.6" opacity="0.55" />
-            <path d="M13.4 16.1 L29 16.1" stroke="#7D5CFF" strokeWidth="1.6" />
-            <path d="M13.4 16.1 L24.5 5" stroke="#EDEAE4" strokeWidth="1.6" opacity="0.85" />
-            <path d="M13.4 16.1 L24.5 27.2" stroke="#EDEAE4" strokeWidth="1.6" opacity="0.35" />
-            <rect x="11.6" y="14.3" width="3.6" height="3.6" fill="#7D5CFF" />
-          </svg>
+          {/* Plain <img>: this boundary replaces the root layout, so next/image
+              and the design system are both unavailable here. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Routefold" width={72} height={72} />
 
           <p
             style={{
@@ -43,7 +40,7 @@ export default function GlobalError({
               fontSize: '0.6875rem',
               letterSpacing: '0.09em',
               textTransform: 'uppercase',
-              color: '#7c7973',
+              color: '#7D736A',
               fontFamily: 'ui-monospace, monospace',
             }}
           >
@@ -61,7 +58,7 @@ export default function GlobalError({
             Routefold could not start
           </h1>
 
-          <p style={{ marginTop: '1rem', color: '#b9b5ad', lineHeight: 1.6, fontSize: '0.9375rem' }}>
+          <p style={{ marginTop: '1rem', color: '#4D453D', lineHeight: 1.6, fontSize: '0.9375rem' }}>
             The error has been logged. Your saved reports are unaffected.
           </p>
 
@@ -71,7 +68,7 @@ export default function GlobalError({
                 marginTop: '0.75rem',
                 fontFamily: 'ui-monospace, monospace',
                 fontSize: '0.6875rem',
-                color: '#4e4c48',
+                color: '#A89D93',
               }}
             >
               Reference: {error.digest}
@@ -85,10 +82,10 @@ export default function GlobalError({
               marginTop: '2rem',
               height: '2.75rem',
               padding: '0 1.75rem',
-              backgroundColor: '#edeae4',
-              color: '#06070a',
+              backgroundColor: '#E2570B',
+              color: '#ffffff',
               border: 'none',
-              borderRadius: '2px',
+              borderRadius: '999px',
               fontSize: '0.9375rem',
               fontWeight: 500,
               cursor: 'pointer',
@@ -96,6 +93,13 @@ export default function GlobalError({
           >
             Try again
           </button>
+
+          <p style={{ marginTop: '1.75rem', fontSize: '0.75rem', color: '#A89D93' }}>
+            Powered by{' '}
+            <a href="https://www.zefi.ae" target="_blank" rel="noopener noreferrer" style={{ color: '#7D736A' }}>
+              ZeFi
+            </a>
+          </p>
         </div>
       </body>
     </html>
