@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     if (generationMode() === 'unavailable') {
       return apiError(
         'AI_NOT_CONFIGURED',
-        'Analysis is not configured on this deployment. ANTHROPIC_API_KEY and ANTHROPIC_MODEL are required.',
+        'Analysis is not configured on this deployment. OPENAI_API_KEY and OPENAI_MODEL are required.',
         503,
       );
     }

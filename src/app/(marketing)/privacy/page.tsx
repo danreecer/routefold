@@ -46,7 +46,7 @@ export default function PrivacyPage() {
 
       <LegalSection title="Processing by a third-party model provider">
         <p>
-          Analysis is performed using the Anthropic API. The content of your wizard answers and the
+          Analysis is performed using the OpenAI API. The content of your wizard answers and the
           text retrieved from your submitted URLs is sent to that API in order to generate a report.
           Routefold does not send your email address, your Clerk identifier, or any other account
           identifier as part of that request.

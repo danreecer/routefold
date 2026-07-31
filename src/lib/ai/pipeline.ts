@@ -171,7 +171,7 @@ function toErrorCode(error: unknown): { code: string; message: string } {
   if (error instanceof AiConfigurationError) {
     return {
       code: 'AI_NOT_CONFIGURED',
-      message: 'Analysis is not configured on this deployment. ANTHROPIC_API_KEY and ANTHROPIC_MODEL are required.',
+      message: 'Analysis is not configured on this deployment. OPENAI_API_KEY and OPENAI_MODEL are required.',
     };
   }
   if (error instanceof AiGenerationError) {

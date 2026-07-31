@@ -218,7 +218,7 @@ const SECTIONS: DocSection[] = [
     body: [
       {
         paragraphs: [
-          'Routefold runs anywhere Next.js runs. It needs PostgreSQL for persistence, Clerk for authentication and an Anthropic API key for live analysis. The public site and the example report work without any of them.',
+          'Routefold runs anywhere Next.js runs. It needs PostgreSQL for persistence, Clerk for authentication and an OpenAI API key for live analysis. The public site and the example report work without any of them.',
         ],
       },
       {
@@ -234,7 +234,7 @@ pnpm dev`,
       {
         heading: 'Operating modes',
         paragraphs: [
-          'With an Anthropic key configured, analysis is live. Without one, setting ROUTEFOLD_FIXTURE_MODE=true enables a deterministic fixture pipeline so the full wizard and report flow can be exercised locally. Fixture output is always labelled as fixture output in the interface and is never substituted for a failed live call.',
+          'With an OpenAI key configured, analysis is live. Without one, setting ROUTEFOLD_FIXTURE_MODE=true enables a deterministic fixture pipeline so the full wizard and report flow can be exercised locally. Fixture output is always labelled as fixture output in the interface and is never substituted for a failed live call.',
         ],
       },
       {

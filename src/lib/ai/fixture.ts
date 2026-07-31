@@ -19,7 +19,7 @@ import type { RankedChainSummary } from './stages';
  * Deterministic fixture pipeline.
  *
  * Purpose: let a developer exercise the entire wizard → report flow locally
- * without an Anthropic key, and let the test suite run without paid API calls.
+ * without an OpenAI key, and let the test suite run without paid API calls.
  *
  * Two rules this module exists to enforce:
  *  1. Fixture output is derived from the *real* deterministic scoring engine, so

@@ -46,8 +46,8 @@ export default async function NewAnalysisPage() {
               <div className="border border-line bg-paper px-4 py-3">
                 <p className="eyebrow">Required</p>
                 <pre className="mt-2 overflow-x-auto font-mono text-[0.6875rem] leading-relaxed text-caution">
-                  {`ANTHROPIC_API_KEY=
-ANTHROPIC_MODEL=`}
+                  {`OPENAI_API_KEY=
+OPENAI_MODEL=`}
                 </pre>
                 <p className="mt-3 text-xs leading-relaxed text-ink-ghost">
                   Alternatively set <code className="font-mono">ROUTEFOLD_FIXTURE_MODE=true</code>{' '}

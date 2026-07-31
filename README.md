@@ -62,7 +62,7 @@ pnpm dev          # http://localhost:3000
 
 The public site, the methodology, the whitepaper and the docs work with no
 credentials at all. For the authenticated application you need Clerk; for live
-analysis you need an Anthropic key. See **Environment** below.
+analysis you need an OpenAI key. See **Environment** below.
 
 > **Use `localhost`, not `127.0.0.1`, in development.** Next's dev server treats
 > requests for `/_next/*` from a host it did not bind as cross-origin and blocks
@@ -82,8 +82,8 @@ Copy `.env.example` and fill it in. Every variable is documented inline there.
 | `DIRECT_DATABASE_URL` | Migrations | Non-pooled URL. Same as `DATABASE_URL` on a single instance. |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Auth | [dashboard.clerk.com](https://dashboard.clerk.com) |
 | `CLERK_SECRET_KEY` | Auth | Never exposed to the client. |
-| `ANTHROPIC_API_KEY` | Live analysis | [console.anthropic.com](https://console.anthropic.com) |
-| `ANTHROPIC_MODEL` | Live analysis | Configuration, never hardcoded in source. |
+| `OPENAI_API_KEY` | Live analysis | [platform.openai.com](https://platform.openai.com/api-keys) |
+| `OPENAI_MODEL` | Live analysis | Configuration, never hardcoded in source. Must support JSON-schema structured outputs. |
 | `NEXT_PUBLIC_APP_URL` | Share links, sitemap, OG | Absolute origin, no trailing slash. |
 | `REPORT_GENERATION_LIMIT` | Quota | Defaults to 5 during private beta. |
 | `ROUTEFOLD_FIXTURE_MODE` | Local dev | Deterministic pipeline with no model call. Always labelled in the UI. |
@@ -95,10 +95,10 @@ authenticated surface explains exactly which variables it needs.
 
 ## Operating modes
 
-**Production** — Clerk, PostgreSQL and Anthropic configured. Real analysis, real
+**Production** — Clerk, PostgreSQL and OpenAI configured. Real analysis, real
 persistence.
 
-**Fixture** — `ROUTEFOLD_FIXTURE_MODE=true` with no Anthropic key. The wizard and
+**Fixture** — `ROUTEFOLD_FIXTURE_MODE=true` with no OpenAI key. The wizard and
 report flow are fully exercisable; chain scores are genuine deterministic engine
 output, narrative sections are templated. Every report is labelled as fixture
 output in the interface and stored with `modelName="fixture"`.

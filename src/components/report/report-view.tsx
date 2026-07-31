@@ -295,8 +295,8 @@ function FixtureNotice() {
           <p className="max-w-3xl text-[0.8125rem] leading-relaxed text-ink-dim">
             This report was produced by the local development fixture pipeline. The chain scores are
             genuine deterministic engine output, but the narrative sections are templated rather
-            than analysed. Configure <code className="font-mono text-xs">ANTHROPIC_API_KEY</code>{' '}
-            and <code className="font-mono text-xs">ANTHROPIC_MODEL</code> for live analysis.
+            than analysed. Configure <code className="font-mono text-xs">OPENAI_API_KEY</code>{' '}
+            and <code className="font-mono text-xs">OPENAI_MODEL</code> for live analysis.
           </p>
         </div>
       </PanelBody>

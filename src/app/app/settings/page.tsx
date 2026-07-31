@@ -126,7 +126,7 @@ export default async function SettingsPage() {
               <ConfigRow label="Database" value={caps.database ? 'Connected' : 'Not configured'} ok={caps.database} />
               <ConfigRow
                 label="Analysis provider"
-                value={caps.liveAi ? env.anthropicModel ?? 'configured' : 'Not configured'}
+                value={caps.liveAi ? env.openaiModel ?? 'configured' : 'Not configured'}
                 ok={caps.liveAi}
               />
               <ConfigRow label="Scoring engine" value={`v${SCORING_VERSION}`} ok />

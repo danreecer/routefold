@@ -171,7 +171,7 @@ change rather than a rewrite.
 - **E2E** — Playwright smoke tests that hold with no credentials configured,
   including a hydration assertion and route-protection checks.
 
-The suite clears `ANTHROPIC_API_KEY` in setup, so no test can make a paid call.
+The suite clears `OPENAI_API_KEY` in setup, so no test can make a paid call.
 
 One test deserves special mention: `example report integrity` asserts that the
 example's narrative recommendation matches the engine's top-ranked chain. If the

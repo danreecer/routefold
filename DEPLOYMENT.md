@@ -1,7 +1,7 @@
 # Deployment
 
 Routefold is a standard Next.js App Router application. It needs PostgreSQL,
-Clerk and an Anthropic API key. The public site works without any of them.
+Clerk and an OpenAI API key. The public site works without any of them.
 
 ---
 
@@ -49,14 +49,14 @@ NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/app
 Add your production domain in the Clerk dashboard before going live. Routefold
 ships its own styled sign-in and sign-up screens at `/sign-in` and `/sign-up`.
 
-## 3. Anthropic
+## 3. OpenAI
 
 ```bash
-ANTHROPIC_API_KEY="sk-ant-..."
-ANTHROPIC_MODEL="claude-sonnet-4-5"
+OPENAI_API_KEY="sk-proj-..."
+OPENAI_MODEL="gpt-4.1"
 ```
 
-`ANTHROPIC_MODEL` is deliberately configuration rather than a hardcoded string,
+`OPENAI_MODEL` is deliberately configuration rather than a hardcoded string,
 so the model can be changed without a code deploy. Leave
 `ROUTEFOLD_FIXTURE_MODE` unset (or `false`) in production.
 

@@ -42,9 +42,9 @@ export const env = {
   clerkPublishableKey: str('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY'),
   clerkSecretKey: str('CLERK_SECRET_KEY'),
 
-  anthropicApiKey: str('ANTHROPIC_API_KEY'),
-  anthropicModel: str('ANTHROPIC_MODEL'),
-  anthropicMaxTokens: int('ANTHROPIC_MAX_TOKENS', 8000),
+  openaiApiKey: str('OPENAI_API_KEY'),
+  openaiModel: str('OPENAI_MODEL'),
+  openaiMaxTokens: int('OPENAI_MAX_TOKENS', 8000),
   aiStageTimeoutMs: int('AI_STAGE_TIMEOUT_MS', 120_000),
 
   reportGenerationLimit: int('REPORT_GENERATION_LIMIT', 5),
@@ -71,7 +71,7 @@ export type Capabilities = {
   auth: boolean;
   /** DATABASE_URL is present; persistence is available. */
   database: boolean;
-  /** Anthropic key + model are present; live analysis is available. */
+  /** OpenAI key + model are present; live analysis is available. */
   liveAi: boolean;
   /** Deterministic fixture pipeline is explicitly enabled for local testing. */
   fixtureAi: boolean;
@@ -82,7 +82,7 @@ export type Capabilities = {
 export function capabilities(): Capabilities {
   const auth = Boolean(env.clerkPublishableKey && env.clerkSecretKey);
   const database = Boolean(env.databaseUrl);
-  const liveAi = Boolean(env.anthropicApiKey && env.anthropicModel);
+  const liveAi = Boolean(env.openaiApiKey && env.openaiModel);
   const fixtureAi = env.fixtureMode;
   return {
     auth,
@@ -123,8 +123,8 @@ export function assertProductionEnv(): string[] {
   if (!env.databaseUrl) problems.push('DATABASE_URL is not set.');
   if (!env.clerkPublishableKey) problems.push('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is not set.');
   if (!env.clerkSecretKey) problems.push('CLERK_SECRET_KEY is not set.');
-  if (!env.anthropicApiKey) problems.push('ANTHROPIC_API_KEY is not set — live analysis is disabled.');
-  if (!env.anthropicModel) problems.push('ANTHROPIC_MODEL is not set — live analysis is disabled.');
+  if (!env.openaiApiKey) problems.push('OPENAI_API_KEY is not set — live analysis is disabled.');
+  if (!env.openaiModel) problems.push('OPENAI_MODEL is not set — live analysis is disabled.');
   if (!str('NEXT_PUBLIC_APP_URL')) problems.push('NEXT_PUBLIC_APP_URL is not set — share links will be relative.');
   if (env.allowPrivateNetworkFetch) {
     problems.push('ALLOW_PRIVATE_NETWORK_FETCH is true in production. This disables SSRF protection.');

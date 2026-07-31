@@ -1,16 +1,23 @@
 import 'server-only';
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { z } from 'zod';
 import { env } from '@/lib/env';
 
 /**
- * Anthropic access layer.
+ * OpenAI access layer.
  *
  * Every generation in Routefold is a *structured* generation: the model is given
- * a tool whose input schema is derived from the Zod schema the caller needs, and
- * is forced to call it. The tool input is then re-validated with the same Zod
- * schema before it is trusted. If validation fails, the validation error itself
- * is fed back and the call is retried.
+ * a JSON Schema derived from the Zod schema the caller needs, and its response is
+ * re-validated with that same Zod schema before it is trusted. If validation
+ * fails, the validation error itself is fed back and the call is retried.
+ *
+ * Note on `strict`: OpenAI's strict structured-output mode requires every
+ * property to appear in `required` and forbids additional properties. Routefold's
+ * schemas use defaults and optionals extensively — encoding those as
+ * always-required would distort the contracts and push the burden onto the model.
+ * So the schema is supplied in non-strict mode as strong guidance, and the real
+ * guarantee stays where it already was: Zod validation plus a retry that shows
+ * the model exactly which fields it got wrong.
  *
  * Nothing in this module is reachable from the client bundle, and no internal
  * error text ever crosses the network boundary.
@@ -32,23 +39,23 @@ export class AiGenerationError extends Error {
   }
 }
 
-let cachedClient: Anthropic | null = null;
+let cachedClient: OpenAI | null = null;
 
-function getClient(): Anthropic {
-  if (!env.anthropicApiKey || !env.anthropicModel) {
+function getClient(): OpenAI {
+  if (!env.openaiApiKey || !env.openaiModel) {
     throw new AiConfigurationError(
-      'ANTHROPIC_API_KEY and ANTHROPIC_MODEL must both be set for live analysis.',
+      'OPENAI_API_KEY and OPENAI_MODEL must both be set for live analysis.',
     );
   }
-  cachedClient ??= new Anthropic({
-    apiKey: env.anthropicApiKey,
+  cachedClient ??= new OpenAI({
+    apiKey: env.openaiApiKey,
     maxRetries: 0, // retries are handled here so validation failures are included
   });
   return cachedClient;
 }
 
 export function modelName(): string {
-  return env.anthropicModel ?? 'unconfigured';
+  return env.openaiModel ?? 'unconfigured';
 }
 
 /**
@@ -74,13 +81,13 @@ export function wrapUntrusted(label: string, content: string): string {
 
 type JsonSchemaObject = Record<string, unknown>;
 
-function toToolSchema(schema: z.ZodType): JsonSchemaObject {
+function toResponseSchema(schema: z.ZodType): JsonSchemaObject {
   const jsonSchema = z.toJSONSchema(schema, {
     target: 'draft-7',
     io: 'input',
     unrepresentable: 'any',
   }) as JsonSchemaObject;
-  // Anthropic tool inputs must be objects at the top level.
+  // A JSON Schema response format must describe an object at the top level.
   if (jsonSchema['type'] !== 'object') {
     return { type: 'object', properties: { value: jsonSchema }, required: ['value'] };
   }
@@ -93,7 +100,7 @@ export type GenerateOptions<T> = {
   system: string;
   prompt: string;
   schema: z.ZodType<T>;
-  /** Name given to the forced tool call — helps the model understand intent. */
+  /** Names the response schema — helps the model understand intent. */
   toolName: string;
   toolDescription: string;
   maxTokens?: number;
@@ -110,6 +117,12 @@ export type GenerateResult<T> = {
   usage: { inputTokens: number; outputTokens: number };
 };
 
+/** Reasoning-family models reject an explicit temperature. Detected, not assumed. */
+function isTemperatureUnsupported(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : '';
+  return /temperature/i.test(message) && /(unsupported|not supported|does not support)/i.test(message);
+}
+
 /**
  * Runs one structured generation with validation-aware retries.
  */
@@ -117,12 +130,16 @@ export async function generateStructured<T>(options: GenerateOptions<T>): Promis
   const client = getClient();
   const model = modelName();
   const maxAttempts = options.maxAttempts ?? 3;
-  const toolSchema = toToolSchema(options.schema);
+  const responseSchema = toResponseSchema(options.schema);
 
-  const messages: Anthropic.MessageParam[] = [{ role: 'user', content: options.prompt }];
+  const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+    { role: 'system', content: options.system },
+    { role: 'user', content: options.prompt },
+  ];
 
   let lastValidationMessage = '';
   let usage = { inputTokens: 0, outputTokens: 0 };
+  let sendTemperature = true;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const timeoutController = new AbortController();
@@ -131,56 +148,62 @@ export async function generateStructured<T>(options: GenerateOptions<T>): Promis
     options.signal?.addEventListener('abort', onAbort, { once: true });
 
     try {
-      const response = await client.messages.create(
+      const response = await client.chat.completions.create(
         {
           model,
-          max_tokens: options.maxTokens ?? env.anthropicMaxTokens,
-          temperature: options.temperature ?? 0.3,
-          system: options.system,
           messages,
-          tools: [
-            {
+          max_completion_tokens: options.maxTokens ?? env.openaiMaxTokens,
+          ...(sendTemperature ? { temperature: options.temperature ?? 0.3 } : {}),
+          response_format: {
+            type: 'json_schema',
+            json_schema: {
               name: options.toolName,
               description: options.toolDescription,
-              input_schema: toolSchema as Anthropic.Tool.InputSchema,
+              schema: responseSchema,
+              strict: false,
             },
-          ],
-          tool_choice: { type: 'tool', name: options.toolName },
+          },
         },
         { signal: timeoutController.signal },
       );
 
       usage = {
-        inputTokens: usage.inputTokens + (response.usage?.input_tokens ?? 0),
-        outputTokens: usage.outputTokens + (response.usage?.output_tokens ?? 0),
+        inputTokens: usage.inputTokens + (response.usage?.prompt_tokens ?? 0),
+        outputTokens: usage.outputTokens + (response.usage?.completion_tokens ?? 0),
       };
 
-      const toolUse = response.content.find(
-        (block): block is Anthropic.ToolUseBlock => block.type === 'tool_use',
-      );
+      const choice = response.choices[0];
+      const content = choice?.message?.content ?? '';
 
-      if (!toolUse) {
-        lastValidationMessage = 'No structured result was returned. Call the tool.';
+      if (choice?.finish_reason === 'length') {
+        lastValidationMessage =
+          'The response was cut off before it was complete. Produce a shorter result that still satisfies every required field.';
+      } else if (content.trim().length === 0) {
+        lastValidationMessage = 'The response was empty. Return a JSON object matching the schema.';
       } else {
-        const parsed = options.schema.safeParse(toolUse.input);
-        if (parsed.success) {
-          return { data: parsed.data, modelName: model, attempts: attempt, usage };
+        let parsedJson: unknown;
+        try {
+          parsedJson = JSON.parse(content);
+        } catch {
+          lastValidationMessage = 'The response was not valid JSON. Return a single JSON object.';
+          parsedJson = undefined;
         }
-        lastValidationMessage = formatZodIssues(parsed.error);
-        // Give the model its own output back plus the precise validation failure.
-        messages.push({ role: 'assistant', content: response.content });
-        messages.push({
-          role: 'user',
-          content: [
-            {
-              type: 'tool_result',
-              tool_use_id: toolUse.id,
-              is_error: true,
-              content: `The submitted structure failed validation. Fix these problems and call the tool again:\n${lastValidationMessage}`,
-            },
-          ],
-        });
+
+        if (parsedJson !== undefined) {
+          const parsed = options.schema.safeParse(parsedJson);
+          if (parsed.success) {
+            return { data: parsed.data, modelName: model, attempts: attempt, usage };
+          }
+          lastValidationMessage = formatZodIssues(parsed.error);
+        }
       }
+
+      // Give the model its own output back plus the precise failure.
+      messages.push({ role: 'assistant', content });
+      messages.push({
+        role: 'user',
+        content: `That response could not be used. Fix these problems and return the corrected JSON object only:\n${lastValidationMessage}`,
+      });
     } catch (error) {
       clearTimeout(timeout);
       options.signal?.removeEventListener('abort', onAbort);
@@ -195,7 +218,14 @@ export async function generateStructured<T>(options: GenerateOptions<T>): Promis
           options.stage,
         );
       }
-      if (error instanceof Anthropic.APIError) {
+      if (error instanceof OpenAI.APIError) {
+        // Some model families reject an explicit temperature; drop it and retry
+        // rather than failing the stage over a parameter we do not need.
+        if (isTemperatureUnsupported(error) && sendTemperature) {
+          sendTemperature = false;
+          continue;
+        }
+
         console.error('[ai] upstream error', {
           stage: options.stage,
           status: error.status,
@@ -208,7 +238,6 @@ export async function generateStructured<T>(options: GenerateOptions<T>): Promis
             options.stage,
           );
         }
-        // Retry transient upstream failures, fail fast on client errors.
         if (error.status && error.status >= 500 && attempt < maxAttempts) {
           continue;
         }

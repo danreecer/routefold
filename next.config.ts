@@ -24,7 +24,7 @@ const connectSrc = [
   "'self'",
   'https://*.clerk.accounts.dev',
   'https://*.clerk.com',
-  'https://api.anthropic.com',
+  'https://api.openai.com',
   ...(isDev ? ['ws://localhost:*', 'http://localhost:*'] : []),
 ].join(' ');
 
@@ -79,7 +79,7 @@ const nextConfig: NextConfig = {
    * open localhost, 127.0.0.1, or the LAN address.
    */
   allowedDevOrigins: ['127.0.0.1', 'localhost', '0.0.0.0'],
-  serverExternalPackages: ['@prisma/client', '@anthropic-ai/sdk'],
+  serverExternalPackages: ['@prisma/client', 'openai'],
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts', '@xyflow/react'],
   },

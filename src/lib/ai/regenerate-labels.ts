@@ -3,7 +3,7 @@ import type { RegeneratableSection } from '@/lib/schemas/report';
 /**
  * Section display names, kept in a client-safe module.
  *
- * `regenerate.ts` is server-only (it imports Prisma and the Anthropic client), so
+ * `regenerate.ts` is server-only (it imports Prisma and the OpenAI client), so
  * the label lookup lives here where a client component can import it without
  * pulling the server graph into the browser bundle.
  */
