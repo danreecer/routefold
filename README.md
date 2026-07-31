@@ -171,10 +171,14 @@ launch-kit/             Brand assets and submission material
 
 ## Ecosystem logos
 
-Routefold ships no third-party logo assets. Drop an official SVG at
-`public/brand/chains/<slug>.svg` and it is detected at build time and used
-automatically — see `public/brand/chains/README.md`. Until then the coverage grid
-renders Routefold's own geometric glyphs.
+The coverage grid on the landing page shows each ecosystem's logo. The SVGs in
+`public/brand/chains/` are hand-authored reproductions of each project's mark in
+its brand colours, used for nominative identification only — they are not the
+projects' official asset files, and their use implies no affiliation.
+
+To swap in an official asset, replace the file with the same name. Detection is
+automatic at build time; any slug without a file falls back to Routefold's own
+geometric glyph. See `public/brand/chains/README.md`.
 
 ## Licence
 

@@ -1,7 +1,11 @@
 # Ecosystem logo assets
 
-Drop an official logo here and Routefold uses it automatically — there is no
-registry to update and no code change required.
+This folder holds one mark per ecosystem. The files currently here are
+hand-authored reproductions of each project's logo in its brand colours — close
+enough to be recognisable at 32px, but not the projects' official asset files.
+
+Replacing any file with the official asset works with no code change: detection
+is automatic and keyed on the filename.
 
 ## Naming
 
@@ -27,8 +31,11 @@ logos at 32px tend to read as noise next to each other.
 
 ## Attribution
 
-Routefold ships none of these assets in the repository. Logos are used for
-nominative identification of the ecosystems Routefold models — the coverage
-section states this, and all marks remain the property of their respective
-owners. Check each project's brand guidelines before shipping publicly; some
-require specific clear-space, minimum sizing, or prohibit recolouring.
+Logos are used for nominative identification of the ecosystems Routefold models.
+The coverage section on the landing page states this explicitly, and all marks
+remain the property of their respective owners.
+
+Before shipping publicly, check each project's brand guidelines and prefer their
+official asset over the reproduction here. Several projects specify clear-space,
+minimum sizing, or prohibit recolouring — a reproduction cannot honour rules it
+does not know about.

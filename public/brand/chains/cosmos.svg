@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><title>Cosmos</title>
+<circle cx="16" cy="16" r="2.6" fill="#2E3148"/>
+<g stroke="#2E3148" stroke-width="1.5" fill="none">
+<ellipse cx="16" cy="16" rx="13.5" ry="5.2"/>
+<ellipse cx="16" cy="16" rx="13.5" ry="5.2" transform="rotate(60 16 16)"/>
+<ellipse cx="16" cy="16" rx="13.5" ry="5.2" transform="rotate(120 16 16)"/>
+</g>
+</svg>
