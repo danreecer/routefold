@@ -69,6 +69,14 @@ export const metadata: Metadata = {
   // convention; no explicit `icons` entry is needed and adding one would
   // override the generated, correctly-sized variants.
   formatDetection: { telephone: false, address: false, email: false },
+  /**
+   * Site-ownership verification. Declared on the root layout so the tag is
+   * emitted into <head> on every route — nested metadata only overrides the
+   * fields it declares, so this survives page-level `metadata` exports.
+   */
+  other: {
+    'ory-verify': 'orynth-a96586f4b37341489d038c75fd64de26',
+  },
 };
 
 export const viewport: Viewport = {
