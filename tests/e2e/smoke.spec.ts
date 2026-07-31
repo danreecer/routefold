@@ -256,6 +256,18 @@ test.describe('mobile navigation', () => {
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
     expect(overflow).toBeLessThanOrEqual(1);
+
+    // Document scroll width alone is not enough: the hero sits inside an
+    // `overflow-hidden` panel, so a blown-out grid track clips the headline
+    // rather than producing a scrollbar. Measure the text itself.
+    const clipped = await page.evaluate(() => {
+      const viewport = document.documentElement.clientWidth;
+      return ['h1', 'h1 + p, h1 ~ p']
+        .flatMap((selector) => [...document.querySelectorAll(selector)])
+        .map((node) => Math.round(node.getBoundingClientRect().right - viewport))
+        .filter((overhang) => overhang > 1);
+    });
+    expect(clipped).toEqual([]);
   });
 });
 

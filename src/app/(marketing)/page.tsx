@@ -78,7 +78,7 @@ function Hero() {
 
         <div className="relative px-6 pb-16 pt-10 md:px-14 md:pb-24 md:pt-14 lg:px-20">
           <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
-            <div className="flex flex-col gap-7">
+            <div className="flex min-w-0 flex-col gap-7">
               <span className="eyebrow animate-fold-in text-ember-deep">
                 AI multichain expansion intelligence
               </span>
@@ -153,8 +153,12 @@ function Hero() {
               </div>
             </div>
 
-            <div className="relative -mx-2 md:mx-0">
-              <RouteField className="aspect-[860/560] min-h-[19rem] w-full lg:min-h-[24rem]" />
+            {/* `min-w-0` is load-bearing: a grid item's automatic minimum size is
+                its min-content width, and the route field's aspect ratio combined
+                with its min-height resolves to a width far wider than a phone.
+                Without this the track stretches to fit it and clips the headline. */}
+            <div className="relative -mx-2 min-w-0 md:mx-0">
+              <RouteField className="aspect-[860/560] min-h-[13rem] w-full sm:min-h-[19rem] lg:min-h-[24rem]" />
               {/* Side mockup — overlaps the route field so the hero shows both the
                   concept and the actual product surface. */}
               <AppMockup className="pointer-events-none absolute -bottom-6 right-0 hidden w-[19rem] rotate-[1.2deg] xl:block" />
