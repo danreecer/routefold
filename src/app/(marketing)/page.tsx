@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { RouteField } from '@/components/marketing/route-field';
 import { FounderSection } from '@/components/marketing/founder-section';
 import { ProductHuntBadge } from '@/components/marketing/product-hunt-badge';
+import { BackedByZefi } from '@/components/marketing/backed-by-zefi';
+import { AppMockup } from '@/components/marketing/app-mockup';
 import {
   CoverageStrip,
   DigitalTwinSection,
@@ -34,6 +36,7 @@ export default function LandingPage() {
       <ScorecardPreview />
       <ExpansionMapSection />
       <StrategyToExecution />
+      <BackedByZefi />
       <FounderSection />
       <MethodologySection />
       <FinalCta />
@@ -123,6 +126,20 @@ function Hero() {
                 className="flex flex-wrap items-center gap-x-6 gap-y-2 animate-fold-in"
                 style={{ animationDelay: '340ms' }}
               >
+                <a
+                  href="https://www.zefi.ae"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2 rounded-full border border-line-strong bg-white/70 py-1 pl-1.5 pr-3 backdrop-blur-md transition-colors hover:border-ember/40 hover:bg-white"
+                >
+                  <span className="flex size-5 items-center justify-center rounded-full bg-ink text-[0.5625rem] font-bold text-paper">
+                    Z
+                  </span>
+                  <span className="font-mono text-[0.625rem] uppercase tracking-[0.1em] text-ink-dim transition-colors group-hover:text-ember-deep">
+                    Backed by ZeFi
+                  </span>
+                </a>
+
                 {['Free during private beta', 'Deterministic scoring', 'Published methodology'].map(
                   (label) => (
                     <span
@@ -137,7 +154,10 @@ function Hero() {
             </div>
 
             <div className="relative -mx-2 md:mx-0">
-              <RouteField className="aspect-[860/560] min-h-[19rem] w-full lg:min-h-[27rem]" />
+              <RouteField className="aspect-[860/560] min-h-[19rem] w-full lg:min-h-[24rem]" />
+              {/* Side mockup — overlaps the route field so the hero shows both the
+                  concept and the actual product surface. */}
+              <AppMockup className="pointer-events-none absolute -bottom-6 right-0 hidden w-[19rem] rotate-[1.2deg] xl:block" />
             </div>
           </div>
         </div>

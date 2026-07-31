@@ -57,10 +57,76 @@ test.describe('landing page', () => {
       /as a graph/i,
       /not a deliverable/i,
       /does not choose the number/i,
+      /built and backed/i,
       /find your next chain/i,
     ]) {
       await expect(page.getByRole('heading', { name: heading })).toBeVisible();
     }
+  });
+});
+
+test.describe('marketing surfaces', () => {
+  test('announces the launch and the backer, and stays dismissed', async ({ page }) => {
+    await page.goto('/');
+
+    const bar = page.getByText('Live on Product Hunt');
+    await expect(bar).toBeVisible();
+    await expect(page.getByRole('link', { name: /support the launch/i })).toHaveAttribute(
+      'href',
+      /producthunt\.com/,
+    );
+
+    await page.getByRole('button', { name: /dismiss announcement/i }).click();
+    await expect(bar).toBeHidden();
+
+    // Dismissal is permanent — nothing here nags on the next visit.
+    await page.reload();
+    await expect(bar).toBeHidden();
+  });
+
+  test('the sticky bar waits for the visitor to get past the hero', async ({ page }) => {
+    await page.goto('/');
+    const cta = page.getByRole('link', { name: /analyze a product|^start$/i }).last();
+
+    // Before scrolling the bar is translated off-screen, below the fold.
+    const startsBelowFold = await cta.evaluate(
+      (node) => node.getBoundingClientRect().top >= window.innerHeight,
+    );
+    expect(startsBelowFold).toBe(true);
+
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.5));
+    await expect(cta).toBeInViewport();
+  });
+
+  test('the social rail never lands on top of the copy', async ({ page }) => {
+    const rail = page.locator('aside[aria-label="Routefold links"]');
+
+    // `.shell` caps at 88rem with 3.5rem of padding, so no gutter exists to hold
+    // the rail until the viewport clears 1536px. Below that it must stay hidden.
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.5));
+    await expect(rail).toBeHidden();
+
+    await page.setViewportSize({ width: 1600, height: 900 });
+    await expect(rail).toBeVisible();
+
+    const clearance = await page.evaluate(() => {
+      const aside = document.querySelector('aside[aria-label="Routefold links"]');
+      const heading = document.querySelector('#backing-heading');
+      if (!aside || !heading) return null;
+      return heading.getBoundingClientRect().left - aside.getBoundingClientRect().right;
+    });
+    expect(clearance).not.toBeNull();
+    expect(clearance as number).toBeGreaterThan(0);
+  });
+
+  test('credits the backer in a way a reader can check', async ({ page }) => {
+    await page.goto('/');
+    const zefi = page.getByRole('link', { name: /zefi/i });
+    await expect(zefi.first()).toHaveAttribute('href', 'https://www.zefi.ae');
+    // Named in the announcement, the hero, the backing section and the footer.
+    expect(await zefi.count()).toBeGreaterThanOrEqual(4);
   });
 });
 
