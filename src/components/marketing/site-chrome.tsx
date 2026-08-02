@@ -6,6 +6,9 @@ import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { RoutefoldMark, RoutefoldWordmark } from '@/components/brand/logo';
 import { PoweredByZefi } from '@/components/brand/powered-by';
+import { ContractAddress } from '@/components/token/contract-address';
+import { OrynthBadge } from '@/components/marketing/orynth-badge';
+import { TOKEN } from '@/content/token';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -202,11 +205,20 @@ export function SiteFooter() {
           ))}
         </div>
 
-        <div className="mt-12 border-t border-line pt-6">
+        {/* The contract address, in full, on every page that has a footer. */}
+        <div className="mt-12 border-t border-line pt-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <ContractAddress size="md" className="w-full md:max-w-2xl" />
+            <OrynthBadge className="shrink-0" />
+          </div>
+        </div>
+
+        <div className="mt-8 border-t border-line pt-6">
           <p className="max-w-4xl text-xs leading-relaxed text-ink-ghost">
             Routefold provides technical and strategic decision support. Outputs may contain
             incomplete assumptions and do not constitute financial, legal, compliance,
-            security-audit, or investment advice.
+            security-audit, or investment advice. ${TOKEN.symbol} is a token on {TOKEN.chain}; it
+            is not an investment and confers no claim on Routefold or its revenue.
           </p>
           <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink-ghost">

@@ -32,7 +32,9 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src ${scriptSrc}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' blob: data: https://img.clerk.com https://api.producthunt.com",
+  // orynth.dev 307-redirects to www.orynth.dev, and CSP is enforced on every
+  // redirect hop — both hosts must be listed or the badge silently fails.
+  "img-src 'self' blob: data: https://img.clerk.com https://api.producthunt.com https://orynth.dev https://www.orynth.dev",
   "font-src 'self' data:",
   `connect-src ${connectSrc}`,
   "frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",

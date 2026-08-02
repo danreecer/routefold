@@ -7,11 +7,12 @@ import { cn } from '@/lib/utils';
 const KEY = 'announcement.launch';
 
 /**
- * Top announcement bar.
+ * Launch and backing bar.
  *
- * Sits in the document flow rather than overlaying, so it never covers content
- * and never causes layout shift once dismissed. Renders nothing until the
- * provider has hydrated, which prevents a dismissed bar flashing on reload.
+ * Sits under the contract-address bar, in the document flow rather than
+ * overlaying, so it never covers content and never causes layout shift once
+ * dismissed. Renders nothing until the provider has hydrated, which prevents a
+ * dismissed bar flashing on reload.
  */
 export function AnnouncementBar() {
   const { hydrated, isDismissed, dismiss } = usePromo();
@@ -19,15 +20,10 @@ export function AnnouncementBar() {
   if (!hydrated || isDismissed(KEY)) return null;
 
   return (
-    <div
-      className={cn(
-        'relative isolate overflow-hidden border-b border-ember/20',
-        'bg-gradient-to-r from-ember-wash via-white to-ember-wash',
-      )}
-    >
-      <div className="shell flex items-center justify-center gap-x-4 gap-y-1 py-2.5 pr-8">
+    <div className={cn('relative isolate overflow-hidden border-b border-line bg-white/70')}>
+      <div className="shell flex items-center justify-center gap-x-4 gap-y-1 py-2 pr-8">
         <p className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-center text-[0.8125rem] text-ink-dim">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-ember/30 bg-white/70 px-2.5 py-0.5 font-mono text-[0.625rem] uppercase tracking-[0.09em] text-ember-deep">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-ember/30 bg-ember-wash px-2.5 py-0.5 font-mono text-[0.625rem] uppercase tracking-[0.09em] text-ember-deep">
             Live on Product Hunt
           </span>
           <span className="hidden sm:inline">

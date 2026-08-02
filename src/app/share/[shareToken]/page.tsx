@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { RoutefoldWordmark } from '@/components/brand/logo';
 import { PoweredByZefi } from '@/components/brand/powered-by';
+import { ContractAddress } from '@/components/token/contract-address';
 import { ReportView } from '@/components/report/report-view';
 import { Panel, PanelBody } from '@/components/ui/panel';
 import { Badge } from '@/components/ui/primitives';
@@ -81,6 +82,7 @@ export default async function SharePage({
 
       <footer className="border-t border-line bg-shell">
         <div className="shell flex flex-wrap items-center justify-between gap-6 py-8">
+          <ContractAddress size="md" className="max-w-2xl" />
           <div className="max-w-2xl">
             <p className="text-xs leading-relaxed text-ink-ghost">
               Routefold provides technical and strategic decision support. Outputs may contain

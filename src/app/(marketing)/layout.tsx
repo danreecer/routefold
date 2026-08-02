@@ -1,5 +1,6 @@
 import { SiteFooter, SiteHeader } from '@/components/marketing/site-chrome';
 import { AnnouncementBar, PromoProvider, PromoSurfaces } from '@/components/marketing/promo';
+import { TokenBar } from '@/components/token/token-bar';
 import { getClerkUserId } from '@/lib/auth';
 
 export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
@@ -7,6 +8,7 @@ export default async function MarketingLayout({ children }: { children: React.Re
   return (
     <PromoProvider>
       <div className="flex min-h-dvh flex-col">
+        <TokenBar />
         <AnnouncementBar />
         <SiteHeader isSignedIn={Boolean(userId)} />
         <main id="main" className="flex-1">

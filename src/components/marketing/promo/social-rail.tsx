@@ -2,6 +2,7 @@
 
 import { ChevronLeft } from 'lucide-react';
 import { usePromo, useScrolledPast } from './promo-provider';
+import { TOKEN } from '@/content/token';
 import { cn } from '@/lib/utils';
 
 const KEY = 'rail.social';
@@ -51,6 +52,18 @@ const LINKS: RailLink[] = [
     href: 'https://www.zefi.ae',
     tone: 'marine',
     glyph: <span className="text-[0.6875rem] font-bold leading-none">Z</span>,
+  },
+  {
+    label: `${TOKEN.symbol} on ${TOKEN.chain} — verify the contract`,
+    href: TOKEN.links.solscan,
+    tone: 'ember',
+    glyph: <span className="text-[0.5625rem] font-bold leading-none">◎</span>,
+  },
+  {
+    label: 'Featured on Orynth',
+    href: TOKEN.links.orynth,
+    tone: 'ink',
+    glyph: <span className="text-[0.6875rem] font-bold leading-none">O</span>,
   },
 ];
 

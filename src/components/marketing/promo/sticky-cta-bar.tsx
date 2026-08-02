@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { ArrowRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RoutefoldMark } from '@/components/brand/logo';
+import { CopyButton } from '@/components/report/copy-button';
+import { TOKEN } from '@/content/token';
 import { usePromo, useScrolledPast } from './promo-provider';
 import { cn } from '@/lib/utils';
 
@@ -42,6 +44,21 @@ export function StickyCtaBar() {
             <p className="truncate text-xs text-ink-faint">
               Free during private beta · five reports included · no card required
             </p>
+          </div>
+
+          {/* Contract address, shown in full where it fits — never truncated. */}
+          <div className="hidden shrink-0 items-center gap-2 rounded-full border border-ember/25 bg-ember-wash py-1 pl-3 pr-1 xl:flex">
+            <span className="font-mono text-[0.5625rem] uppercase tracking-[0.1em] text-ember-deep">
+              ${TOKEN.symbol}
+            </span>
+            <code className="font-mono text-[0.6875rem] text-ink">{TOKEN.mint}</code>
+            <CopyButton
+              value={TOKEN.mint}
+              label="Copy contract address"
+              successLabel="Copied"
+              variant="ghost"
+              size="icon-sm"
+            />
           </div>
 
           <Button asChild size="sm" variant="accent" className="shrink-0">

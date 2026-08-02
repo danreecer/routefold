@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { RoutefoldWordmark } from '@/components/brand/logo';
 import { PoweredByZefi } from '@/components/brand/powered-by';
+import { ContractAddressInline } from '@/components/token/contract-address';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -20,6 +21,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       </main>
 
       <footer className="relative border-t border-line">
+        <div className="shell pt-5">
+          <ContractAddressInline />
+        </div>
         <div className="shell flex flex-wrap items-center justify-between gap-4 py-5">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <p className="text-xs text-ink-ghost">

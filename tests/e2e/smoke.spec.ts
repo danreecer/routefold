@@ -121,6 +121,38 @@ test.describe('marketing surfaces', () => {
     expect(clearance as number).toBeGreaterThan(0);
   });
 
+  test('publishes the contract address in full, never truncated', async ({ page }) => {
+    const MINT = 'GCosMmwoMRwtLiMpb2tmmZyvwLzXU758iUKr1YXjyory';
+    await page.goto('/');
+
+    // Every rendered <code> that looks like an address must be the whole thing.
+    // A middle-ellipsised address is what a lookalike forgery survives, so a
+    // partial render is a defect, not a style choice.
+    const rendered = await page.evaluate(() =>
+      [...document.querySelectorAll('code')]
+        .map((node) => (node.textContent ?? '').trim())
+        .filter((text) => /^[1-9A-HJ-NP-Za-km-z…\\.]{8,}$/.test(text)),
+    );
+    expect(rendered.length).toBeGreaterThan(0);
+    for (const text of rendered) {
+      expect(text).toBe(MINT);
+    }
+
+    // The dedicated section exists and every explorer link carries the mint.
+    await expect(page.getByRole('heading', { name: /one contract address/i })).toBeVisible();
+    for (const name of [/solscan/i, /solana explorer/i, /dexscreener/i, /jupiter/i]) {
+      await expect(page.getByRole('link', { name })).toHaveAttribute('href', new RegExp(MINT));
+    }
+  });
+
+  test('offers a copy control wherever the address appears', async ({ page }) => {
+    await page.goto('/');
+    // Both labellings count: the icon-only control in the bar announces "Copy
+    // contract address", the labelled control in each card reads "Copy".
+    const copy = page.getByRole('button', { name: /^copy( contract address)?$/i });
+    expect(await copy.count()).toBeGreaterThanOrEqual(2);
+  });
+
   test('credits the backer in a way a reader can check', async ({ page }) => {
     await page.goto('/');
     const zefi = page.getByRole('link', { name: /zefi/i });

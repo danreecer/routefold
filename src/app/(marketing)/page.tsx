@@ -7,6 +7,9 @@ import { FounderSection } from '@/components/marketing/founder-section';
 import { ProductHuntBadge } from '@/components/marketing/product-hunt-badge';
 import { BackedByZefi } from '@/components/marketing/backed-by-zefi';
 import { AppMockup } from '@/components/marketing/app-mockup';
+import { OrynthBadge } from '@/components/marketing/orynth-badge';
+import { TokenSection } from '@/components/token/token-section';
+import { ContractAddress } from '@/components/token/contract-address';
 import {
   CoverageStrip,
   DigitalTwinSection,
@@ -36,6 +39,7 @@ export default function LandingPage() {
       <ScorecardPreview />
       <ExpansionMapSection />
       <StrategyToExecution />
+      <TokenSection />
       <BackedByZefi />
       <FounderSection />
       <MethodologySection />
@@ -118,8 +122,18 @@ function Hero() {
                 </Button>
               </div>
 
-              <div className="animate-fold-in" style={{ animationDelay: '280ms' }}>
+              {/* The contract address sits above the fold, in full, next to the
+                  primary CTA — the single place a reader should ever take it from. */}
+              <div className="animate-fold-in" style={{ animationDelay: '260ms' }}>
+                <ContractAddress size="md" className="max-w-xl" />
+              </div>
+
+              <div
+                className="flex flex-wrap items-center gap-3 animate-fold-in"
+                style={{ animationDelay: '300ms' }}
+              >
                 <ProductHuntBadge />
+                <OrynthBadge />
               </div>
 
               <div
